@@ -1,0 +1,32 @@
+{
+  "name": "try-amaranth",
+  "version": "0.0.0",
+  "description": "Playground for experimenting with and sharing short Amaranth programs on the web",
+  "author": "Catherine <whitequark@whitequark.org>",
+  "license": "BSD-2-Clause",
+  "homepage": "https://github.com/whitequark/try-amaranth#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whitequark/try-amaranth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/whitequark/try-amaranth/issues"
+  },
+  "scripts": {
+    "build": "esbuild index=src/index.html bundle=src/index.tsx --bundle --outdir=dist --loader:.html=copy --loader:.woff=copy --loader:.woff2=copy --loader:.ttf=copy --loader:.svg=dataurl --format=esm --target=es2015 --sourcemap --define:globalThis.IS_PRODUCTION=false",
+    "minify": "npm run build -- --minify --define:globalThis.IS_PRODUCTION=true",
+    "watch": "npm run build -- --watch",
+    "serve": "npm run build -- --watch --serve"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/inter": "^5.0.16",
+    "@mui/joy": "^5.0.0-beta.28",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "esbuild": "^0.20.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}
