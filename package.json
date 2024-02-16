@@ -1,31 +1,38 @@
 {
-  "name": "try-amaranth",
+  "name": "amaranth-playground",
   "version": "0.0.0",
   "description": "Playground for experimenting with and sharing short Amaranth programs on the web",
   "author": "Catherine <whitequark@whitequark.org>",
   "license": "BSD-2-Clause",
-  "homepage": "https://github.com/whitequark/try-amaranth#readme",
+  "homepage": "https://github.com/whitequark/amaranth-playground#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whitequark/try-amaranth.git"
+    "url": "git+https://github.com/whitequark/amaranth-playground.git"
   },
   "bugs": {
-    "url": "https://github.com/whitequark/try-amaranth/issues"
+    "url": "https://github.com/whitequark/amaranth-playground/issues"
   },
   "scripts": {
-    "build": "esbuild index=src/index.html bundle=src/index.tsx --bundle --outdir=dist --loader:.html=copy --loader:.woff=copy --loader:.woff2=copy --loader:.ttf=copy --loader:.svg=dataurl --format=esm --target=es2015 --sourcemap --define:globalThis.IS_PRODUCTION=false",
-    "minify": "npm run build -- --minify --define:globalThis.IS_PRODUCTION=true",
-    "watch": "npm run build -- --watch",
-    "serve": "npm run build -- --watch --serve"
+    "build": "node build.mjs build",
+    "minify": "node build.mjs minify",
+    "watch": "node build.mjs watch",
+    "serve": "node build.mjs serve"
   },
-  "dependencies": {
+  "devDependencies": {
+    "@chialab/esbuild-plugin-meta-url": "^0.18.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/inter": "^5.0.16",
+    "@mui/icons-material": "^5.15.10",
     "@mui/joy": "^5.0.0-beta.28",
+    "@types/d3": "^7.4.3",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
+    "@yowasp/yosys": "^0.39.37-dev.676",
+    "d3-wave": "^1.1.5",
     "esbuild": "^0.20.0",
+    "monaco-editor": "^0.46.0",
+    "pyodide": "^0.25.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   }

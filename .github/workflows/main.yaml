@@ -1,0 +1,44 @@
+on:
+  push:
+  pull_request:
+
+name: CI
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+      - name: Install and build
+        run: |
+          npm ci
+          npm run minify
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - name: Disable Jekyll
+        run: |
+          touch dist/.nojekyll
+      - name: Publish artifact
+        if: "${{ github.event_name == 'push' && github.event.ref == 'refs/heads/main' }}"
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          folder: dist/
+          single-commit: true

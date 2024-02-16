@@ -1,3 +1,19 @@
 body {
-  color: red;
+  overflow-x: hidden; /* only serves to hide a scroll issue in first place :( */
 }
+
+code {
+  border: 1px solid gray;
+  border-radius: 3px;
+  padding: 0px 2px;
+}
+
+.terminal-output {
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+/* .terminal-stdout {} */
+.terminal-stderr { color: red; }
