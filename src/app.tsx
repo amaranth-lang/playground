@@ -226,7 +226,13 @@ function AppContent() {
         </p>
         <p>
           Have fun! You can now <Link onClick={completeTutorial}>mark the tutorial as complete</Link> {}
-          and start experimenting, or continue reading if you want to know more details.
+          and start experimenting, or continue reading if you want to know more details. If you want
+          to see your design run on a real development board, try the <Link
+            href="https://marketplace.visualstudio.com/items?itemName=yowasp.toolchain"
+          >YoWASP Toolchain</Link> extension for Visual Studio Code; it provides an end-to-end FPGA
+          toolchain for the popular iCE40 and ECP5 FPGA families entirely in the browser. {}
+          {'usb' in navigator ? <></> : <>(Your browser does not support WebUSB, so you will need
+          to use a different browser or install a flashing utility separately.)</>}
         </p>
         <p>
           The only functionality available in this playground that isn't a part of the Amaranth
