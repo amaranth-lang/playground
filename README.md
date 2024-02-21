@@ -20,6 +20,12 @@ This application is built on:
 
 The amount of dependencies is intentionally kept minimal. All code processing tasks (TypeScript compilation, minification, bundling, polyfilling/transpilation, serving in development) are performed by esbuild, which is amazingly flexible and useful.
 
+## Deployment
+
+The latest commit in the `main` branch is deployed to the `gh-pages` branch, except in the `amaranth-lang/playground` repository. (This lets you show the changes made in your fork to others without them building the application on their machine.)
+
+The latest commit in the `live` branch is deployed to the `main` branch of `amaranth-lang/amaranth-lang.github.io`, which is published at https://amaranth-lang.org/play/. To publish latest changes from the `main` branch, run `git push origin main:live`.
+
 ## License
 
 This application is released under the [two-clause BSD license](LICENSE.txt).

@@ -32,7 +32,7 @@ jobs:
         with:
           name: dist
           path: dist/
-      - name: Publish development documentation
+      - name: Publish artifact to the main Amaranth website
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           folder: dist/
@@ -58,7 +58,7 @@ jobs:
       - name: Disable Jekyll
         run: |
           touch dist/.nojekyll
-      - name: Publish artifact
+      - name: Publish artifact to gh-pages branch in this repository
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           folder: dist/
