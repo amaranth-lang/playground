@@ -2,7 +2,7 @@
 
 This repository contains the source code for the [Amaranth Playground][], a web application that introduces developers to the [Amaranth HDL][] with zero installation required.
 
-[amaranth playground]: https://whitequark.github.io/amaranth-playground/
+[amaranth playground]: https://amaranth-lang.org/play/
 [amaranth hdl]: https://amaranth-lang.org/
 
 ## Technical details

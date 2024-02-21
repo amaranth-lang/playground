@@ -4,13 +4,13 @@
   "description": "Playground for experimenting with and sharing short Amaranth programs on the web",
   "author": "Catherine <whitequark@whitequark.org>",
   "license": "BSD-2-Clause",
-  "homepage": "https://github.com/whitequark/amaranth-playground#readme",
+  "homepage": "https://github.com/amaranth-lang/playground#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whitequark/amaranth-playground.git"
+    "url": "git+https://github.com/amaranth-lang/playground.git"
   },
   "bugs": {
-    "url": "https://github.com/whitequark/amaranth-playground/issues"
+    "url": "https://github.com/amaranth-lang/playground/issues"
   },
   "scripts": {
     "build": "node build.mjs build",
