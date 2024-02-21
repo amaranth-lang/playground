@@ -489,6 +489,8 @@ createRoot(document.getElementById('root')!).render(
   </CssVarsProvider>
 );
 
+console.log('Build ID:', globalThis.GIT_COMMIT);
+
 // https://esbuild.github.io/api/#live-reload
 if (!globalThis.IS_PRODUCTION)
   new EventSource('/esbuild').addEventListener('change', () => location.reload());

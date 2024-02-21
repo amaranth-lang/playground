@@ -1,6 +1,9 @@
 import * as process from 'node:process';
+import * as child_process from 'node:child_process';
 import * as esbuild from 'esbuild';
 import metaUrlPlugin from '@chialab/esbuild-plugin-meta-url';
+
+const gitCommit = child_process.execSync('git rev-parse HEAD', { encoding: 'utf-8' }).replace(/\n$/, '');
 
 const mode = (process.argv[2] ?? 'build');
 const options = {
@@ -23,6 +26,7 @@ const options = {
         'node-fetch', // pyodide
     ],
     define: {
+        'globalThis.GIT_COMMIT': `"${mode === 'minify' ? gitCommit : 'HEAD'}"`,
         'globalThis.IS_PRODUCTION': (mode === 'minify' ? 'true' : 'false'),
     },
     target: 'es2021',
