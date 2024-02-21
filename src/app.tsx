@@ -278,7 +278,7 @@ function AppContent() {
         </p>
         <p>
           The source code of the playground itself is {}
-          <Link href="https://github.com/whitequark/amaranth-playground">available on GitHub</Link>.
+          <Link href="https://github.com/amaranth-lang/playground">available on GitHub</Link>.
         </p>
       </Box>
     }),
