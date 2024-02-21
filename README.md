@@ -20,6 +20,19 @@ This application is built on:
 
 The amount of dependencies is intentionally kept minimal. All code processing tasks (TypeScript compilation, minification, bundling, polyfilling/transpilation, serving in development) are performed by esbuild, which is amazingly flexible and useful.
 
+## Development
+
+Requires [Node.js](https://nodejs.org/) and  [npm](https://npmjs.org/). Install them and run:
+
+```console
+npm install
+npm run serve
+```
+
+This will start a local server at http://localhost:8000/ (or a subsequent port if this one is in use). Any modifications to the source will cause the application to be reloaded with the modifications applied.
+
+If you are using Visual Studio Code, you can also use <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>B</kbd> instead.
+
 ## Deployment
 
 The latest commit in the `main` branch is deployed to the `gh-pages` branch, except in the `amaranth-lang/playground` repository. (This lets you show the changes made in your fork to others without them building the application on their machine.)
