@@ -171,8 +171,9 @@ function AppContent() {
           The code you enter in the "Amaranth Source" tab is ordinary Python code that runs in
           an environment where the Amaranth Python package and its dependencies are already
           installed. You can write <code>import amaranth</code> and start experimenting without any
-          distractions. Once you're done, click the "Run" button in the top left, or press
-          {} <kbd>Ctrl</kbd>+<kbd>Enter</kbd> while the editor is focused. Go ahead and try!
+          distractions. Once you're done, click the "<PlayArrowIcon fontSize='small'/> Run" button
+          in the top left, or press <kbd>Ctrl</kbd>+<kbd>Enter</kbd> while the editor is focused.
+          Go ahead and try!
         </p>
         <p>
           You will see several new tabs appear:
@@ -199,9 +200,10 @@ function AppContent() {
           </li>
         </ul>
         <p>
-          The contents of these tabs isn't automatically updated: you need to click the "Run"
-          button every time you modify the code to see how the changes in it affect the results.
-          Try changing something and clicking "Run" now!
+          The contents of these tabs isn't automatically updated: you need to click
+          the "<PlayArrowIcon fontSize='small'/> Run" button every time you modify the code to see
+          how the changes in it affect the results.
+          Try changing something and clicking "<PlayArrowIcon fontSize='small'/> Run" now!
         </p>
         <p>
           The code you write in the "Amaranth Source" tab is automatically saved when you change it,
