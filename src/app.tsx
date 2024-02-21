@@ -162,7 +162,7 @@ function AppContent() {
           To switch between views, use the tab bar right above this text. The tab with
           the "<QuestionMarkIcon fontSize='small'/>" icon shows this tutorial. When you open this
           page, the only other visible tab will be "Amaranth Source", containing a demonstration
-          program. Go ahead and try this! Then switch back to the tutorial by clicking {}
+          program. Go ahead and open it! Then switch back to the tutorial by clicking {}
           <QuestionMarkIcon fontSize='small'/>.
           (If the demonstration program doesn't appear, or if you edited it and now
           want to go back, you can <Link onClick={loadDemoCode}>reload it</Link>.)
