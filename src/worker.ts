@@ -3,11 +3,6 @@ import { runYosys, Exit as YosysExit } from '@yowasp/yosys';
 
 import { HostToWorkerMessage, WorkerToHostMessage } from './proto';
 
-const pythonPackages = [
-  'https://files.pythonhosted.org/packages/98/8d/a0d8fb2b9611f3ae22ddc98890b346833fa2c645ad21fd282e61ccdad477/pyvcd-0.4.0-py2.py3-none-any.whl',
-  'https://files.pythonhosted.org/packages/27/1c/39881fbd48f9de91d64955f206a7f32fd912d306d18e8c5f74126ee5962f/amaranth-0.4.2-py3-none-any.whl',
-];
-
 function postMessage(data: WorkerToHostMessage, transfer?: Transferable[]) {
   console.log('[Worker] Sending', data);
   self.postMessage(data, { transfer });
@@ -30,7 +25,7 @@ const yosysPromise = (runYosys() as unknown as Promise<void>).then(() => {
 });
 
 // Start preloading Pyodide.
-const pyodidePromise = loadPyodide({
+let pyodidePromise = loadPyodide({
   env: {
       HOME: '/',
       AMARANTH_USE_YOSYS: 'javascript',
@@ -69,8 +64,7 @@ const pyodidePromise = loadPyodide({
         args.destroy();
       }
     }
-  },
-  packages: pythonPackages
+  }
 }).then((pyodide) => {
   const show_waveforms = runInNewContext(pyodide, `\
 import contextlib
@@ -143,7 +137,8 @@ self.onmessage = async (event: MessageEvent<HostToWorkerMessage>) => {
   console.log('[Worker] Received', event.data);
   if (event.data.type === 'loadPackages') {
     const pyodide = await pyodidePromise;
-    await pyodide.loadPackage(event.data.pkgs);
+    // Make sure the following call to `loadPackages` or `runPython` waits until it's done.
+    pyodidePromise = pyodide.loadPackage(event.data.pkgs).then(() => pyodide);
   } else if (event.data.type === 'runPython') {
     // Wait until all resources are loaded that the final `runYosys` call becomes synchronous.
     await yosysPromise;

@@ -8,13 +8,19 @@ export class ToolRunner {
 
   private initializeWorker(packages: string[]): Worker {
     if (JSON.stringify(this.#packages) !== JSON.stringify(packages)) {
-      if (this.#worker !== null) {
+      if (this.#worker !== null && this.#packages !== null) {
+        // Terminate and re-initialize if the set of packages has changed.
         this.#worker.terminate();
         this.#worker = new Worker('app.worker.js', { type: 'module' });
       }
+      this.#worker.postMessage({ type: 'loadPackages', pkgs: packages });
       this.#packages = packages;
     }
     return this.#worker;
+  }
+
+  preloadPackages(packages: string[]) {
+    this.initializeWorker(packages);
   }
 
   runPython(code: string, options: {
@@ -25,7 +31,7 @@ export class ToolRunner {
     onShowVerilog: (code: string) => void,
     onShowWaveforms: (data: object) => void,
   }): Promise<void> {
-    console.log('[Host] Running', { code });
+    console.log('[Host] Running', { packages: options.packages, code });
     const worker = this.initializeWorker(options.packages);
     return new Promise((resolve, reject) => {
       function onmessage(event: MessageEvent<WorkerToHostMessage>) {
