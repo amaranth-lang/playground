@@ -8,18 +8,21 @@ export interface ViewerProps {
 }
 
 export function Viewer(props: ViewerProps) {
+  const waveGraphRef = useRef<WaveGraph | null>(null);
   const imageRef = useRef<SVGSVGElement>(null);
   const imageId = useId();
 
   useEffect(() => {
-    const waveGraph = new WaveGraph(d3.select(`[id="${imageId}"]`));
-    waveGraph.bindData(props.data);
-    waveGraph.setSizes();
+    if (waveGraphRef.current === null)
+      waveGraphRef.current = new WaveGraph(d3.select(`[id="${imageId}"]`));
+    waveGraphRef.current.setSizes();
 
-    const resizeObserver = new ResizeObserver((events) => waveGraph.setSizes());
+    const resizeObserver = new ResizeObserver((events) => waveGraphRef.current.setSizes());
     resizeObserver.observe(imageRef.current!);
     return () => resizeObserver.disconnect();
   }, []);
+
+  useEffect(() => waveGraphRef.current?.bindData(props.data), [props.data]);
 
   return <svg width="100%" height="100%" style={{ display: 'block' }} id={imageId} ref={imageRef}/>;
 }
