@@ -1,5 +1,9 @@
-body {
-  overflow-x: hidden; /* only serves to hide a scroll issue in first place :( */
+.MuiTabs-root {
+  overflow: hidden;
+}
+
+.MuiTabPanel-root {
+  overflow-y: auto;
 }
 
 code {
@@ -9,9 +13,6 @@ code {
 }
 
 .terminal-output {
-  height: 100%;
-  overflow-y: scroll;
-  overflow-x: auto;
   white-space: pre-wrap;
   font-family: monospace;
 }

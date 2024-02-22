@@ -21,5 +21,5 @@ export function Viewer(props: ViewerProps) {
     return () => resizeObserver.disconnect();
   }, []);
 
-  return <svg width="100%" height="100%" id={imageId} ref={imageRef}/>;
+  return <svg width="100%" height="100%" style={{ display: 'block' }} id={imageId} ref={imageRef}/>;
 }
