@@ -38,7 +38,7 @@ function stealHashQuery() {
   const { hash } = window.location;
   if (hash !== '') {
     history.replaceState(null, '', ' '); // remove #... from URL entirely
-    const hashQuery = decodeURIComponent(hash).substring(1);
+    const hashQuery = decodeURIComponent(hash.replace(/\+/g, '%20')).substring(1);
     try {
       return JSON.parse(hashQuery);
     } catch {}
@@ -456,7 +456,7 @@ function AppContent() {
           <Link href={
             new URL('#' + encodeURIComponent(JSON.stringify({
               av: amaranthVersion, s: sourceEditorState.text
-            })), window.location.href).toString()
+            })).replace(/%20/g, '+'), window.location.href).toString()
           }>
             Copy this link to share the source code
           </Link>
