@@ -50,13 +50,8 @@ export function Editor({ padding, language, state, setState, focus = false, acti
       readOnly: setState === undefined,
     });
     actions.forEach(action => editorRef.current?.addAction(action));
-    const resizeObserver = new ResizeObserver((events) => {
-      // without shrinking the editor, the browser will only stretch the viewport vertically
-      editorRef.current?.layout({ width: 0, height: 0 });
-      editorRef.current?.layout();
-    });
-    resizeObserver.observe(containerRef.current!); // to detect expansion
-    resizeObserver.observe(window.document.body); // to detect shrinkage
+    const resizeObserver = new ResizeObserver(events => editorRef.current?.layout());
+    resizeObserver.observe(containerRef.current!);
     editorRef.current.restoreViewState(state.viewState);
     if (focus)
       editorRef.current.focus();
