@@ -38,10 +38,15 @@ function stealHashQuery() {
   const { hash } = window.location;
   if (hash !== '') {
     history.replaceState(null, '', ' '); // remove #... from URL entirely
-    const hashQuery = decodeURIComponent(hash.replace(/\+/g, '%20')).substring(1);
+    const hashQuery = hash.substring(1);
     try {
-      return JSON.parse(hashQuery);
-    } catch {}
+      return JSON.parse(atob(hashQuery));
+    } catch {
+      try {
+        // Legacy encoding, used 2024-02-16 to 2024-02-24.
+        return JSON.parse(decodeURIComponent(hashQuery.replace('+', '%20')));
+      } catch {}
+    }
   }
 }
 
@@ -454,9 +459,10 @@ function AppContent() {
           onClose={(_event, _reason) => setSharingOpen(false)}
         >
           <Link href={
-            new URL('#' + encodeURIComponent(JSON.stringify({
+            // base64 overhead is fixed at 33%, urlencode overhead is variable, typ. 133% (!)
+            new URL('#' + btoa(JSON.stringify({
               av: amaranthVersion, s: sourceEditorState.text
-            })).replace(/%20/g, '+'), window.location.href).toString()
+            })), window.location.href).toString()
           }>
             Copy this link to share the source code
           </Link>
