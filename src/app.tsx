@@ -75,11 +75,11 @@ function AppContent() {
   const [tutorialDone, setTutorialDone] = useState(localStorage.getItem('amaranth-playground.tutorialDone') !== null);
   useEffect(() => tutorialDone ? localStorage.setItem('amaranth-playground.tutorialDone', '') : void 0, [tutorialDone]);
   const [activeTab, setActiveTab] = useState(tutorialDone ? 'amaranth-source' : 'tutorial');
-  const [sourceEditorState, setSourceEditorState] = useState(new EditorState(
+  const [amaranthSource, setAmaranthSource] = useState<string>(
     query?.s
     ?? localStorage.getItem('amaranth-playground.source')
-    ?? data.demoCode));
-  useEffect(() => localStorage.setItem('amaranth-playground.source', sourceEditorState.text), [sourceEditorState]);
+    ?? data.demoCode);
+  useEffect(() => localStorage.setItem('amaranth-playground.source', amaranthSource), [amaranthSource]);
   const [pythonOutput, setPythonOutput] = useState<TerminalChunk[] | null>(null);
   const [pythonOutputWasNull, setPythonOutputWasNull] = useState(true);
   const [waveforms, setWaveforms] = useState<object | null>(null);
@@ -87,8 +87,14 @@ function AppContent() {
   const [rtlilProduct, setRtlilProduct] = useState<string | null>(null);
   const [verilogProduct, setVerilogProduct] = useState<string | null>(null);
 
+  const amaranthSourceEditorState = useRef(new EditorState(amaranthSource, setAmaranthSource, 'python'));
+  const rtlilProductEditorState = useRef(new EditorState(rtlilProduct, null, 'rtlil'));
+  useEffect(() => { rtlilProductEditorState.current.text = rtlilProduct ?? ''; }, [rtlilProduct]);
+  const verilogProductEditorState = useRef(new EditorState(verilogProduct, null, 'verilog'));
+  useEffect(() => { verilogProductEditorState.current.text = verilogProduct ?? ''; }, [verilogProduct]);
+
   function loadDemoCode() {
-    setSourceEditorState(new EditorState(data.demoCode));
+    amaranthSourceEditorState.current.text = data.demoCode;
     setActiveTab('amaranth-source');
   }
 
@@ -107,7 +113,7 @@ function AppContent() {
       let gotRtlil = false;
       let gotVerilog = false;
       let gotWaveforms = false;
-      await runner.runPython(sourceEditorState.text, {
+      await runner.runPython(amaranthSource, {
         packages: data.pythonPackages[amaranthVersion],
         onStdout: (text) =>
           setPythonOutput(output => (output ?? []).concat([{stream: 'stdout', text }])),
@@ -291,11 +297,7 @@ function AppContent() {
       key: 'amaranth-source',
       title: 'Amaranth Source',
       content: <Editor
-        padding={{ top: 10, bottom: 10 }}
-        language='python'
-        state={sourceEditorState}
-        setState={setSourceEditorState}
-        focus
+        state={amaranthSourceEditorState.current}
         actions={[
           {
             id: 'amaranth-playground.run',
@@ -306,16 +308,18 @@ function AppContent() {
             run: runCode,
           }
         ]}
+        padding={{ top: 10, bottom: 10 }}
+        focus
       />
     })
   ];
 
-  const prevSourceCode = useRef(sourceEditorState.text);
+  const prevAmaranthSource = useRef(amaranthSource);
   useEffect(() => {
-    if (sourceEditorState.text != prevSourceCode.current)
+    if (amaranthSource != prevAmaranthSource.current)
       setProductsOutOfDate(true);
-    prevSourceCode.current = sourceEditorState.text;
-  }, [sourceEditorState]);
+    prevAmaranthSource.current = amaranthSource;
+  }, [amaranthSource]);
 
   if (pythonOutput !== null)
     tabsWithPanels.push(tabAndPanel({
@@ -364,9 +368,8 @@ function AppContent() {
           </Alert>}
           <Box sx={{ flexGrow: 1 }}>
             <Editor
+              state={rtlilProductEditorState.current}
               padding={{ top: 10, bottom: 10 }}
-              language='rtlil'
-              state={new EditorState(rtlilProduct)}
               focus
             />
           </Box>
@@ -385,9 +388,8 @@ function AppContent() {
           </Alert>}
           <Box sx={{ flexGrow: 1 }}>
             <Editor
+              state={verilogProductEditorState.current}
               padding={{ top: 10, bottom: 10 }}
-              language='verilog'
-              state={new EditorState(verilogProduct)}
               focus
             />
           </Box>
@@ -461,7 +463,7 @@ function AppContent() {
           <Link href={
             // base64 overhead is fixed at 33%, urlencode overhead is variable, typ. 133% (!)
             new URL('#' + btoa(JSON.stringify({
-              av: amaranthVersion, s: sourceEditorState.text
+              av: amaranthVersion, s: amaranthSource
             })), window.location.href).toString()
           }>
             Copy this link to share the source code

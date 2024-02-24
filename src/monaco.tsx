@@ -8,46 +8,49 @@ window.MonacoEnvironment = {
 };
 
 export class EditorState {
-  constructor(
-    readonly text = '',
-    readonly viewState: monaco.editor.ICodeEditorViewState | null = null
-  ) {}
+  readonly model: monaco.editor.IModel;
+  readonly readOnly: boolean;
+  viewState: monaco.editor.ICodeEditorViewState | null = null;
 
-  updateText(newText: string = '') {
-    return new EditorState(newText, this.viewState);
+  constructor(text: string | null = '', setText: ((text: string) => void) | null = null, language = 'text') {
+    this.model = monaco.editor.createModel(text || '', language);
+    this.readOnly = (setText === null);
+    if (!this.readOnly)
+      this.model.onDidChangeContent(event => setText!(this.model.getValue()));
   }
 
-  updateViewState(newViewState?: monaco.editor.ICodeEditorViewState | null) {
-    return new EditorState(this.text, newViewState);
+  get text(): string {
+    return this.model.getValue();
+  }
+
+  set text(text: string) {
+    if (this.readOnly)
+      this.model.setValue(text); // don't care about undo buffer, can't undo
+    else
+      this.model.pushEditOperations([], [{ range: this.model.getFullModelRange(), text }], () => null);
+  }
+
+  dispose() {
+    this.model.dispose();
   }
 }
 
 export interface EditorProps {
-  padding?: monaco.editor.IEditorPaddingOptions;
-  language?: string;
-  state: EditorState;
-  setState?: Dispatch<SetStateAction<EditorState>>;
-  focus?: boolean;
+  state: EditorState,
   actions?: monaco.editor.IActionDescriptor[];
+  padding?: monaco.editor.IEditorPaddingOptions;
+  focus?: boolean;
 }
 
-export function Editor({ padding, language, state, setState, focus = false, actions = [] }: EditorProps) {
-  const modelRef = useRef<monaco.editor.IModel | null>(null);
+export function Editor({ state, actions = [], padding, focus = false }: EditorProps) {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    modelRef.current = monaco.editor.createModel(state.text, language);
-    if (setState) {
-      modelRef.current.onDidChangeContent(event => {
-        const newText = modelRef.current!.getValue();
-        setState(state => state.updateText(newText));
-      });
-    }
     editorRef.current = monaco.editor.create(containerRef.current!, {
+      model: state.model,
+      readOnly: state.readOnly,
       padding,
-      model: modelRef.current,
-      readOnly: setState === undefined,
     });
     actions.forEach(action => editorRef.current?.addAction(action));
     const resizeObserver = new ResizeObserver(events => editorRef.current?.layout());
@@ -56,23 +59,11 @@ export function Editor({ padding, language, state, setState, focus = false, acti
     if (focus)
       editorRef.current.focus();
     return () => {
-      setState?.(new EditorState(modelRef.current?.getValue(), editorRef.current?.saveViewState()));
+      state.viewState = editorRef.current!.saveViewState();
       resizeObserver.disconnect();
       editorRef.current?.dispose();
-      editorRef.current = null;
-      modelRef.current?.dispose();
-      modelRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    monaco.editor.setModelLanguage(modelRef.current!, language ?? 'text');
-  }, [language]);
-
-  useEffect(() => {
-    if (modelRef.current?.getValue() !== state.text)
-      modelRef.current?.setValue(state.text);
-  }, [state]);
 
   return <div style={{ height: '100%' }} ref={containerRef}/>;
 }
