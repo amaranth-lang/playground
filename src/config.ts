@@ -1,6 +1,10 @@
 export default {
-  amaranthVersions: ['v0.4.4', 'v0.4.3', 'v0.4.2'],
+  amaranthVersions: ['v0.4.5', 'v0.4.4', 'v0.4.3', 'v0.4.2'],
   pythonPackages: {
+    'v0.4.5': [
+      'https://files.pythonhosted.org/packages/98/8d/a0d8fb2b9611f3ae22ddc98890b346833fa2c645ad21fd282e61ccdad477/pyvcd-0.4.0-py2.py3-none-any.whl',
+      'https://files.pythonhosted.org/packages/1a/bf/cff5c705f2f5978889e1fa0fc2a70e0fadbb9f2a51db2d3315c3bda7c3ea/amaranth-0.4.5-py3-none-any.whl',
+    ],
     'v0.4.4': [
       'https://files.pythonhosted.org/packages/98/8d/a0d8fb2b9611f3ae22ddc98890b346833fa2c645ad21fd282e61ccdad477/pyvcd-0.4.0-py2.py3-none-any.whl',
       'https://files.pythonhosted.org/packages/ee/66/bbb766873059d8051ddb7e760de80beefd286979bc9a786e7ec4ac524336/amaranth-0.4.4-py3-none-any.whl',
