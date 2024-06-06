@@ -493,7 +493,7 @@ function AppContent() {
 }
 
 createRoot(document.getElementById('root')!).render(
-  <CssVarsProvider>
+  <CssVarsProvider defaultMode='system'>
     <CssBaseline/>
     <AppContent/>
   </CssVarsProvider>
