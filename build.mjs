@@ -53,7 +53,7 @@ if (mode === 'build' || mode === 'minify') {
     await context.rebuild();
     await context.watch();
     // Specifying `servedir` is necessary for files built by meta URL plugin to be accessible.
-    await context.serve({ servedir: 'dist' });
+    await context.serve({ servedir: 'dist', port: 8010 });
 } else {
     console.error(`Usage: ${process.argv0} [build|watch|serve|minify]`);
 }
