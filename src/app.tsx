@@ -332,11 +332,17 @@ function AppContent() {
     tabsWithPanels.push(tabAndPanel({
       key: 'python-output',
       title: 'Python Output',
+      titleStyle: productsOutOfDate ? { textDecoration: 'line-through' } : {},
       content:
-        <Box
-          className='terminal-output'
-          sx={{ paddingX: 2, paddingY: 1 }}
-        >{TerminalOutput('python-output', pythonOutput)}</Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          {productsOutOfDate && <Alert variant='soft' color='warning' sx={{ borderRadius: 0 }}>
+            The Python output is out of date. Run the program again to refresh it.
+          </Alert>}
+          <Box
+            className='terminal-output'
+            sx={{ flexGrow: 1, paddingX: 2, paddingY: 1 }}
+          >{TerminalOutput('python-output', pythonOutput)}</Box>
+        </Box>
     }));
 
   useEffect(() => {
