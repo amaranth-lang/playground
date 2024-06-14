@@ -78,7 +78,7 @@ function AppContent() {
   const [amaranthSource, setAmaranthSource] = useState<string>(
     query?.s
     ?? localStorage.getItem('amaranth-playground.source')
-    ?? data.demoCode);
+    ?? data.demoCode[amaranthVersion]);
   useEffect(() => localStorage.setItem('amaranth-playground.source', amaranthSource), [amaranthSource]);
   const [pythonOutput, setPythonOutput] = useState<TerminalChunk[] | null>(null);
   const [pythonOutputWasNull, setPythonOutputWasNull] = useState(true);
@@ -94,8 +94,15 @@ function AppContent() {
   useEffect(() => { verilogProductEditorState.current.text = verilogProduct ?? ''; }, [verilogProduct]);
 
   function loadDemoCode() {
-    amaranthSourceEditorState.current.text = data.demoCode;
+    amaranthSourceEditorState.current.text = data.demoCode[amaranthVersion];
     setActiveTab('amaranth-source');
+  }
+
+  function setAmaranthVersionAndUpdateDemoCode(newAmaranthVersion: string) {
+    const wasDemoCode = (amaranthSourceEditorState.current.text == data.demoCode[amaranthVersion]);
+    setAmaranthVersion(newAmaranthVersion);
+    if (wasDemoCode)
+      amaranthSourceEditorState.current.text = data.demoCode[newAmaranthVersion];
   }
 
   function completeTutorial() {
@@ -429,7 +436,7 @@ function AppContent() {
           sx={{ borderRadius: 10 }}
           variant='outlined'
           value={amaranthVersion}
-          onChange={(_event, value) => setAmaranthVersion(value as string)}
+          onChange={(_event, value) => setAmaranthVersionAndUpdateDemoCode(value as string)}
         >
           {data.amaranthVersions.map((version) =>
             <Option key={version} value={version}>Amaranth {version}</Option>)}

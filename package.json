@@ -28,7 +28,7 @@
     "@types/d3": "^7.4.3",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",
-    "@yowasp/yosys": "^0.39.37-dev.676",
+    "@yowasp/yosys": "^0.42.733",
     "d3-wave": "^1.1.5",
     "esbuild": "^0.20.0",
     "monaco-editor": "^0.46.0",
