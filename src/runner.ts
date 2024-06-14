@@ -1,9 +1,11 @@
 import { WorkerToHostMessage } from './proto';
 
+const workerURL = `app.worker.js?hash=${globalThis.GIT_COMMIT.substr(0, 8)}`;
+
 export class PythonError extends Error {}
 
 export class ToolRunner {
-  #worker = new Worker('app.worker.js', { type: 'module' });
+  #worker = new Worker(workerURL, { type: 'module' });
   #packages: null | string[] = null;
 
   private initializeWorker(packages: string[]): Worker {
@@ -11,7 +13,7 @@ export class ToolRunner {
       if (this.#worker !== null && this.#packages !== null) {
         // Terminate and re-initialize if the set of packages has changed.
         this.#worker.terminate();
-        this.#worker = new Worker('app.worker.js', { type: 'module' });
+        this.#worker = new Worker(workerURL, { type: 'module' });
       }
       this.#worker.postMessage({ type: 'loadPackages', pkgs: packages });
       this.#packages = packages;
