@@ -10,11 +10,11 @@ export type { PyodideInterface } from 'pyodide';
 export type { PyProxy } from 'pyodide/ffi';
 
 export const loadPyodide: typeof originalLoadPyodide = function(options) {
-    return originalLoadPyodide({
-        indexURL: '.',
-        stdLibURL: pyodideStdLib,
-        // @ts-ignore
-        lockFileURL: pyodideLockFile,
-        ...options
-    });
+  return originalLoadPyodide({
+    indexURL: '.',
+    stdLibURL: pyodideStdLib,
+    // @ts-ignore
+    lockFileURL: pyodideLockFile,
+    ...options
+  });
 }
