@@ -52,6 +52,7 @@ let pyodidePromise = loadPyodide({
           },
           stdout: data => data ? stdout.push(new TextDecoder().decode(data)) : null,
           stderr: data => data ? stderr.push(new TextDecoder().decode(data)) : null,
+          synchronously: true,
         });
         return [0, stdout.join(''), stderr.join('')];
       } catch(e) {
