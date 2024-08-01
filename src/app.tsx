@@ -273,7 +273,7 @@ function AppContent() {
           </li>
           <li>
             <code>amaranth_playground.show_rtlil(rtlil.convert(m))</code> displays <Link
-              href="https://yosyshq.readthedocs.io/projects/yosys/en/latest/CHAPTER_Overview.html#the-rtl-intermediate-language-rtlil"
+              href="https://yosyshq.readthedocs.io/projects/yosys/en/latest/yosys_internals/formats/rtlil_rep.html"
             >RTLIL code</Link>, the <Link href="https://yosyshq.net">Yosys</Link> intermediate
             representation. This code is accepted by the open-source FPGA toolchain, and is used
             internally by the Amaranth compiler to produce Verilog code. Unless you are investigating
