@@ -83,6 +83,7 @@ function AppContent() {
   const [pythonOutput, setPythonOutput] = useState<TerminalChunk[] | null>(null);
   const [pythonOutputWasNull, setPythonOutputWasNull] = useState(true);
   const [waveforms, setWaveforms] = useState<object | null>(null);
+  const [outputOutOfDate, setOutputOutOfDate] = useState(false);
   const [productsOutOfDate, setProductsOutOfDate] = useState(false);
   const [rtlilProduct, setRtlilProduct] = useState<string | null>(null);
   const [verilogProduct, setVerilogProduct] = useState<string | null>(null);
@@ -152,6 +153,7 @@ function AppContent() {
       }
     } finally {
       setRunning(false);
+      setOutputOutOfDate(false);
     }
   }
 
@@ -323,8 +325,10 @@ function AppContent() {
 
   const prevAmaranthSource = useRef(amaranthSource);
   useEffect(() => {
-    if (amaranthSource != prevAmaranthSource.current)
+    if (amaranthSource != prevAmaranthSource.current) {
+      setOutputOutOfDate(true);
       setProductsOutOfDate(true);
+    }
     prevAmaranthSource.current = amaranthSource;
   }, [amaranthSource]);
 
@@ -332,10 +336,10 @@ function AppContent() {
     tabsWithPanels.push(tabAndPanel({
       key: 'python-output',
       title: 'Python Output',
-      titleStyle: productsOutOfDate ? { textDecoration: 'line-through' } : {},
+      titleStyle: outputOutOfDate ? { textDecoration: 'line-through' } : {},
       content:
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-          {productsOutOfDate && <Alert variant='soft' color='warning' sx={{ borderRadius: 0 }}>
+          {outputOutOfDate && <Alert variant='soft' color='warning' sx={{ borderRadius: 0 }}>
             The Python output is out of date. Run the program again to refresh it.
           </Alert>}
           <Box
