@@ -111,7 +111,7 @@ function AppContent() {
     setActiveTab('amaranth-source');
   }
 
-  async function runCode() {
+  const runCode = React.useCallback(async () => {
     if (running)
       return;
     try {
@@ -155,7 +155,7 @@ function AppContent() {
       setRunning(false);
       setOutputOutOfDate(false);
     }
-  }
+  }, [amaranthSource, amaranthVersion]);
 
   function tabAndPanel({ key, title, titleStyle = {}, content }) {
     return [
