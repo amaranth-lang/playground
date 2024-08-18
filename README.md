@@ -29,7 +29,7 @@ npm install
 npm run serve
 ```
 
-This will start a local server at http://localhost:8000/ (or a subsequent port if this one is in use). Any modifications to the source will cause the application to be reloaded with the modifications applied.
+This will start a local server at http://localhost:8010/ (or a subsequent port if this one is in use). Any modifications to the source will cause the application to be reloaded with the modifications applied.
 
 If you are using Visual Studio Code, you can also use <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>B</kbd> instead.
 
