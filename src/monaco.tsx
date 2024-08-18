@@ -63,7 +63,7 @@ export function Editor({ state, actions = [], padding, focus = false }: EditorPr
       resizeObserver.disconnect();
       editorRef.current?.dispose();
     };
-  }, []);
+  }, [actions]);
 
   return <div style={{ height: '100%' }} ref={containerRef}/>;
 }
