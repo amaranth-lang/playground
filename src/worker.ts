@@ -98,7 +98,7 @@ def vcd_to_d3wave(vcd_file):
             by_id[token.data.id_code] = new_child
         elif token.kind == TokenKind.CHANGE_TIME:
             time = token.data
-        elif token.kind in (TokenKind.CHANGE_SCALAR, TokenKind.CHANGE_VECTOR):
+        elif token.kind in (TokenKind.CHANGE_SCALAR, TokenKind.CHANGE_VECTOR, TokenKind.CHANGE_STRING):
             signal = by_id[token.data.id_code]
             value = token.data.value
             if isinstance(value, int):
