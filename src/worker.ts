@@ -95,16 +95,22 @@ def vcd_to_d3wave(vcd_file):
                 "data": []
             }
             scope[-1]["children"].append(new_child)
-            by_id[token.data.id_code] = new_child
+            if token.data.id_code in by_id.keys():
+                by_id[token.data.id_code][1].append(new_child)
+            else:
+                by_id[token.data.id_code] = (new_child, [])
         elif token.kind == TokenKind.CHANGE_TIME:
             time = token.data
         elif token.kind in (TokenKind.CHANGE_SCALAR, TokenKind.CHANGE_VECTOR, TokenKind.CHANGE_STRING):
-            signal = by_id[token.data.id_code]
+            signal = by_id[token.data.id_code][0]
             value = token.data.value
             if isinstance(value, int):
                 value = f"{value:0{signal['type']['width']}d}"
             signal["data"].append([time, value])
 
+    for id, (parent, children) in by_id.items():
+        for child in children:
+            child["data"] = parent["data"]
     return (root if len(root["children"]) > 1 else root["children"][-1])
 
 
