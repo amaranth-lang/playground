@@ -157,6 +157,20 @@ function AppContent() {
     }
   }, [amaranthSource, amaranthVersion]);
 
+  const runCodeRef = useRef(runCode);
+  runCodeRef.current = runCode;
+
+  const amaranthSourceEditorActions = React.useMemo(() => [
+    {
+      id: 'amaranth-playground.run',
+      label: 'Run Code',
+      keybindings: [
+          monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+      ],
+      run: runCodeRef.current,
+    }
+  ], [runCodeRef]);
+
   function tabAndPanel({ key, title, titleStyle = {}, content }) {
     return [
       <Tab key={`${key}-tab`} value={key} style={titleStyle}>{title}</Tab>,
@@ -307,16 +321,7 @@ function AppContent() {
       title: 'Amaranth Source',
       content: <Editor
         state={amaranthSourceEditorState.current}
-        actions={[
-          {
-            id: 'amaranth-playground.run',
-            label: 'Run Code',
-            keybindings: [
-                monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
-            ],
-            run: runCode,
-          }
-        ]}
+        actions={amaranthSourceEditorActions}
         padding={{ top: 10, bottom: 10 }}
         focus
       />

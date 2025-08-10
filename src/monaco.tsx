@@ -52,7 +52,6 @@ export function Editor({ state, actions = [], padding, focus = false }: EditorPr
       readOnly: state.readOnly,
       padding,
     });
-    actions.forEach(action => editorRef.current?.addAction(action));
     const resizeObserver = new ResizeObserver(events => editorRef.current?.layout());
     resizeObserver.observe(containerRef.current!);
     editorRef.current.restoreViewState(state.viewState);
@@ -62,6 +61,15 @@ export function Editor({ state, actions = [], padding, focus = false }: EditorPr
       state.viewState = editorRef.current!.saveViewState();
       resizeObserver.disconnect();
       editorRef.current?.dispose();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!editorRef.current)
+      return;
+    const disposables = actions.map(action => editorRef.current!.addAction(action));
+    return () => {
+      disposables.forEach(disposable => disposable.dispose());
     };
   }, [actions]);
 
