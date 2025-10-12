@@ -18,23 +18,26 @@
     "watch": "node build.mjs watch",
     "serve": "node build.mjs serve"
   },
-  "devDependencies": {
+  "dependencies": {
     "@chialab/esbuild-plugin-meta-url": "^0.18.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/inter": "^5.0.16",
     "@mui/icons-material": "^5.15.10",
     "@mui/joy": "^5.0.0-beta.28",
-    "@types/d3": "^7.4.3",
-    "@types/react": "^18.2.55",
-    "@types/react-dom": "^18.2.19",
     "@yowasp/yosys": "release",
+    "core-js": "^3.46.0",
     "d3-wave": "^1.1.5",
-    "esbuild": "^0.25.0",
     "monaco-editor": "^0.46.0",
     "pyodide": "^0.25.0",
     "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "esbuild": "^0.25.0",
     "typescript": "^5.9.3"
   }
 }

@@ -29,7 +29,7 @@ const options = {
         'globalThis.GIT_COMMIT': `"${mode === 'minify' ? gitCommit : 'HEAD'}"`,
         'globalThis.IS_PRODUCTION': (mode === 'minify' ? 'true' : 'false'),
     },
-    target: 'es2021',
+    target: 'es2022',
     format: 'esm',
     sourcemap: 'linked',
     minify: (mode === 'minify'),
