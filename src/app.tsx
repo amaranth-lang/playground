@@ -1,3 +1,6 @@
+import 'core-js/modules/es.uint8-array.from-base64';
+import 'core-js/modules/es.uint8-array.to-base64';
+
 import { createRoot } from 'react-dom/client';
 
 import * as React from 'react';
@@ -13,6 +16,7 @@ import IconButton from '@mui/joy/IconButton';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import Link from '@mui/joy/Link';
+import CircularProgress from '@mui/joy/CircularProgress';
 import Snackbar from '@mui/joy/Snackbar';
 import Alert from '@mui/joy/Alert';
 import Tabs from '@mui/joy/Tabs';
@@ -30,25 +34,89 @@ import * as monaco from 'monaco-editor';
 import { EditorState, Editor } from './monaco';
 import { Viewer as WaveformViewer } from './d3wave';
 import { PythonError, runner } from './runner';
+import { compress, decompress } from './zstd';
 import data from './config';
 
 import './app.css';
 
-function stealHashQuery() {
+interface SharePayload {
+  av: string;
+  s: string;
+}
+
+const zstdMagic = new Uint8Array([0x28, 0xb5, 0x2f, 0xfd]);
+
+const getSharePayloadDictionary = (() => {
+  let promise: Promise<Uint8Array> | undefined;
+  return async () => {
+    return promise ??=
+      fetch(new URL('zstd/dictionary.bin', import.meta.url).toString())
+        .then((response) => response.arrayBuffer())
+        .then((buffer) => new Uint8Array(buffer));
+  };
+})();
+
+async function createShareFragment(sourceCode: string, amaranthVersion: string): Promise<string> {
+  let payload = JSON.stringify({
+    av: amaranthVersion,
+    s: sourceCode,
+  } satisfies SharePayload);
+
+  let compressed = await compress(
+    new TextEncoder().encode(payload),
+    getSharePayloadDictionary(),
+  );
+
+  // Remove the Zstandard magic bytes and add a version field
+  let result = new Uint8Array(1 + compressed.length - zstdMagic.length);
+  result[0] = 1; // version
+  result.set(compressed.subarray(zstdMagic.length), 1);
+
+  return result.toBase64();
+}
+
+async function decodeShareFragment(hashQuery: string): Promise<SharePayload> {
+  if (/^[0-9A-Za-z+/=]+$/.test(hashQuery)) {
+    let bytes = Uint8Array.fromBase64(hashQuery);
+    // Check the version
+    if (bytes[0] === 1) {
+      let zstdPayload = bytes.subarray(1);
+      if (indexedDB.cmp(bytes.subarray(0, 4), zstdMagic) !== 0) {
+        zstdPayload = (() => {
+          let result = new Uint8Array(zstdMagic.length + zstdPayload.length);
+          result.set(zstdMagic);
+          result.set(zstdPayload, zstdMagic.length);
+          return result;
+        })();
+      }
+      bytes = await decompress(
+        zstdPayload,
+        getSharePayloadDictionary(),
+      );
+    } else if (bytes[0] !== '{'.charCodeAt(0)) {
+      return;
+    }
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } else {
+    // Legacy encoding, used 2024-02-16 to 2024-02-24.
+    return JSON.parse(decodeURIComponent(hashQuery.replace('+', '%20')));
+  }
+}
+
+async function stealHashQuery() {
   const { hash } = window.location;
   if (hash !== '') {
     history.replaceState(null, '', ' '); // remove #... from URL entirely
     const hashQuery = hash.substring(1);
     try {
-      return JSON.parse(atob(hashQuery));
-    } catch {
-      try {
-        // Legacy encoding, used 2024-02-16 to 2024-02-24.
-        return JSON.parse(decodeURIComponent(hashQuery.replace('+', '%20')));
-      } catch {}
+      return decodeShareFragment(hashQuery);
+    } catch (error) {
+      console.warn('Could not parse the URL fragment, ignoring.', error);
     }
   }
 }
+
+const query: { av?: string, s?: string } | undefined = await stealHashQuery();
 
 interface TerminalChunk {
   stream: 'stdout' | 'stderr';
@@ -64,7 +132,6 @@ function AppContent() {
   const {mode, setMode} = useColorScheme();
   useEffect(() => monaco.editor.setTheme(mode === 'light' ? 'vs' : 'vs-dark'), [mode]);
 
-  const query: { av?: string, s?: string } | undefined = stealHashQuery();
   const [amaranthVersion, setAmaranthVersion] = useState(
     query?.av
     ?? localStorage.getItem('amaranth-playground.amaranthVersion')
@@ -72,6 +139,7 @@ function AppContent() {
   useEffect(() => localStorage.setItem('amaranth-playground.amaranthVersion', amaranthVersion), [amaranthVersion]);
   const [running, setRunning] = useState(false);
   const [sharingOpen, setSharingOpen] = useState(false);
+  const [shareURL, setShareURL] = useState('');
   const [tutorialDone, setTutorialDone] = useState(localStorage.getItem('amaranth-playground.tutorialDone') !== null);
   useEffect(() => tutorialDone ? localStorage.setItem('amaranth-playground.tutorialDone', '') : void 0, [tutorialDone]);
   const [activeTab, setActiveTab] = useState(tutorialDone ? 'amaranth-source' : 'tutorial');
@@ -159,6 +227,14 @@ function AppContent() {
 
   const runCodeRef = useRef(runCode);
   runCodeRef.current = runCode;
+
+  async function shareCode() {
+    setSharingOpen(true);
+    setShareURL('');
+    let fragment = await createShareFragment(amaranthSource, amaranthVersion);
+    let url = new URL('#' + fragment, window.location.href).toString();
+    setShareURL(url);
+  }
 
   const amaranthSourceEditorActions = React.useMemo(() => [
     {
@@ -472,7 +548,7 @@ function AppContent() {
           color='neutral'
           variant='outlined'
           endDecorator={<ShareIcon/>}
-          onClick={() => setSharingOpen(true)}
+          onClick={() => shareCode()}
         >
           Share
         </Button>
@@ -482,14 +558,11 @@ function AppContent() {
           open={sharingOpen}
           onClose={(_event, _reason) => setSharingOpen(false)}
         >
-          <Link href={
-            // base64 overhead is fixed at 33%, urlencode overhead is variable, typ. 133% (!)
-            new URL('#' + btoa(JSON.stringify({
-              av: amaranthVersion, s: amaranthSource
-            })), window.location.href).toString()
-          }>
-            Copy this link to share the source code
-          </Link>
+          {shareURL === '' ? <CircularProgress /> : (
+            <Link href={shareURL}>
+              Copy this link to share the source code
+            </Link>
+          )}
         </Snackbar>
 
         <IconButton
