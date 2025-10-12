@@ -5,9 +5,11 @@ import { WaveGraph } from 'd3-wave';
 import { RowRendererBits } from 'd3-wave';
 
 export class RowRendererString extends RowRendererBits {
+  FORMATTERS: { STRING: any };
+  DEFAULT_FORMAT: any;
+
   constructor(waveGraph: WaveGraph) {
     super(waveGraph);
-    // @ts-ignore
     this.FORMATTERS = {
       "STRING": (data: { toString(): string }) =>
         data.toString()

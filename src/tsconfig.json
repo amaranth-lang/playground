@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "skipLibCheck": true,
+    "jsx": "preserve",
+    "module": "preserve",
+    "target": "esnext",
+    "lib": [
+      "ESNext",
+      "DOM",
+    ],
+  },
+}
