@@ -103,7 +103,7 @@ async function decodeShareFragment(hashQuery: string): Promise<SharePayload> {
   }
 }
 
-async function stealHashQuery() {
+function stealHashQuery() {
   const { hash } = window.location;
   if (hash !== '') {
     history.replaceState(null, '', ' '); // remove #... from URL entirely
@@ -116,8 +116,6 @@ async function stealHashQuery() {
   }
 }
 
-const query: { av?: string, s?: string } | undefined = await stealHashQuery();
-
 interface TerminalChunk {
   stream: 'stdout' | 'stderr';
   text: string;
@@ -127,6 +125,8 @@ function TerminalOutput(key: string, output: TerminalChunk[]) {
   return output.map((chunk, index) =>
     <span key={`${key}-${index}`} className={`terminal-${chunk.stream}`}>{chunk.text}</span>);
 }
+
+const query = await stealHashQuery();
 
 function AppContent() {
   const {mode, setMode} = useColorScheme();
@@ -161,6 +161,33 @@ function AppContent() {
   useEffect(() => { rtlilProductEditorState.current.text = rtlilProduct ?? ''; }, [rtlilProduct]);
   const verilogProductEditorState = useRef(new EditorState(verilogProduct, null, 'verilog'));
   useEffect(() => { verilogProductEditorState.current.text = verilogProduct ?? ''; }, [verilogProduct]);
+
+  const processSharePayload = React.useCallback((payload: SharePayload) => {
+    setAmaranthVersion(payload.av);
+    amaranthSourceEditorState.current.text = payload.s;
+    if (activeTab === 'tutorial') {
+      setActiveTab('amaranth-source');
+    }
+  }, [activeTab]);
+
+  const processSharePayloadRef = useRef(processSharePayload);
+  processSharePayloadRef.current = processSharePayload;
+
+  useEffect(() => {
+    let listener_ac = new AbortController();
+    let handler_ac: AbortController | undefined;
+    window.addEventListener('hashchange', async () => {
+      handler_ac?.abort();
+      handler_ac = new AbortController();
+      let result = await stealHashQuery();
+      handler_ac.signal.throwIfAborted();
+      if (result) processSharePayloadRef.current(result);
+    }, { signal: listener_ac.signal });
+    return () => {
+      listener_ac.abort();
+      handler_ac?.abort();
+    };
+  }, []);
 
   function loadDemoCode() {
     amaranthSourceEditorState.current.text = data.demoCode[amaranthVersion];
