@@ -255,14 +255,6 @@ function AppContent() {
   const runCodeRef = useRef(runCode);
   runCodeRef.current = runCode;
 
-  async function shareCode() {
-    setSharingOpen(true);
-    setShareURL('');
-    let fragment = await createShareFragment(amaranthSource, amaranthVersion);
-    let url = new URL('#' + fragment, window.location.href).toString();
-    setShareURL(url);
-  }
-
   const amaranthSourceEditorActions = React.useMemo(() => [
     {
       id: 'amaranth-playground.run',
@@ -270,9 +262,17 @@ function AppContent() {
       keybindings: [
           monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
       ],
-      run: runCodeRef.current,
+      run: () => runCodeRef.current(),
     }
   ], [runCodeRef]);
+
+  async function shareCode() {
+    setSharingOpen(true);
+    setShareURL('');
+    let fragment = await createShareFragment(amaranthSource, amaranthVersion);
+    let url = new URL('#' + fragment, window.location.href).toString();
+    setShareURL(url);
+  }
 
   function tabAndPanel({ key, title, titleStyle = {}, content }) {
     return [
