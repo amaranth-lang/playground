@@ -142,7 +142,7 @@ function AppContent() {
   const [shareURL, setShareURL] = useState('');
   const [tutorialDone, setTutorialDone] = useState(localStorage.getItem('amaranth-playground.tutorialDone') !== null);
   useEffect(() => tutorialDone ? localStorage.setItem('amaranth-playground.tutorialDone', '') : void 0, [tutorialDone]);
-  const [activeTab, setActiveTab] = useState(tutorialDone ? 'amaranth-source' : 'tutorial');
+  const [activeTab, setActiveTab] = useState((query || tutorialDone) ? 'amaranth-source' : 'tutorial');
   const [amaranthSource, setAmaranthSource] = useState<string>(
     query?.s
     ?? localStorage.getItem('amaranth-playground.source')
