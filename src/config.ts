@@ -12,7 +12,11 @@ const amaranth_0_5_3 = 'https://files.pythonhosted.org/packages/3a/8d/889014b45e
 const amaranth_0_5_4 = 'https://files.pythonhosted.org/packages/f4/c3/a7124071d8cf2dfc958a13fd6d32efb075ce203d275df8fcbb00cbe82ad7/amaranth-0.5.4-py3-none-any.whl';
 const amaranth_0_5_5 = 'https://files.pythonhosted.org/packages/62/77/79407d18a2130e5bee4a94d19a71c05d36d64d7200ff01c2b024fb0ceda3/amaranth-0.5.5-py3-none-any.whl';
 const amaranth_0_5_6 = 'https://files.pythonhosted.org/packages/11/30/626dfdf7ef2f3c91731d76ccf44429db923b14cb81008ed363d58e7ea48e/amaranth-0.5.6-py3-none-any.whl';
+const amaranth_0_5_7 = 'https://files.pythonhosted.org/packages/88/a0/9c1a65f09f81a4ef485e280c47f953477acfab42f614a6a102108490fe36/amaranth-0.5.7-py3-none-any.whl';
+const amaranth_0_5_8 = 'https://files.pythonhosted.org/packages/74/4b/61caac0c0ba1934ed839ddfa35592e3cbc2a6762e829209df5e8adab4fda/amaranth-0.5.8-py3-none-any.whl';
 const pythonPackages = {
+  'v0.5.8': [rfc3986_2_0_0, jschon_0_11_1, pyvcd_0_4_1, amaranth_0_5_8],
+  'v0.5.7': [rfc3986_2_0_0, jschon_0_11_1, pyvcd_0_4_1, amaranth_0_5_7],
   'v0.5.6': [rfc3986_2_0_0, jschon_0_11_1, pyvcd_0_4_1, amaranth_0_5_6],
   'v0.5.5': [rfc3986_2_0_0, jschon_0_11_1, pyvcd_0_4_1, amaranth_0_5_5],
   'v0.5.4': [rfc3986_2_0_0, jschon_0_11_1, pyvcd_0_4_1, amaranth_0_5_4],
@@ -85,6 +89,8 @@ amaranth_playground.show_verilog(verilog.convert(m, ports=[count]))
 # amaranth_playground.show_rtlil(rtlil.convert(m, ports=[count]))
 `;
 const demoCode = {
+  'v0.5.8': demoCode_0_5,
+  'v0.5.7': demoCode_0_5,
   'v0.5.6': demoCode_0_5,
   'v0.5.5': demoCode_0_5,
   'v0.5.4': demoCode_0_5,
