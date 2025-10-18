@@ -49,4 +49,5 @@ jobs:
         name: Publish artifact to https://amaranth-lang.org/play/
         run: |
           set -o pipefail
+          cd dist/
           tar c * | zstd -T0 -1 | curl https://amaranth-lang.org/play/ -X PUT -H "Authorization: Pages ${{ secrets.GREBEDOC_TOKEN }}" -H "Content-Type: application/x-tar+zstd" -T -
