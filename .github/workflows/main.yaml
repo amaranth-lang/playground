@@ -38,9 +38,15 @@ jobs:
       - name: Disable Jekyll
         run: |
           touch dist/.nojekyll
-      - name: Publish artifact to gh-pages branch in this repository
+      - if: ${{ github.repository != 'amaranth-lang/playground' }}
+        name: Publish artifact to gh-pages branch in this repository
         uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           folder: dist/
           branch: ${{ github.repository == 'amaranth-lang/playground' && 'pages' || 'gh-pages' }}
           single-commit: true
+      - if: ${{ github.repository == 'amaranth-lang/playground' }}
+        name: Publish artifact to https://amaranth-lang.org/play/
+        run: |
+          set -o pipefail
+          tar c * | zstd -T0 -1 | curl https://amaranth-lang.org/play/ -X PUT -H "Authorization: Pages ${{ secrets.GREBEDOC_TOKEN }}" -H "Content-Type: application/x-tar+zstd" -T -

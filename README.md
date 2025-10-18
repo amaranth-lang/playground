@@ -33,11 +33,11 @@ This will start a local server at http://localhost:8010/ (or a subsequent port i
 
 If you are using Visual Studio Code, you can also use <kbd>Shift</kbd>+<kbd>Ctrl</kbd>+<kbd>B</kbd> instead.
 
-## Deployment
+## Publication
 
-The latest commit in the `main` branch is deployed to the `gh-pages` branch, except in the `amaranth-lang/playground` repository. (This lets you show the changes made in your fork to others without them building the application on their machine.)
+Except in the `amaranth-lang/playground` repository, the latest commit in the `main` branch is built and the result is published to the `gh-pages` branch. (This lets you show the changes made in your fork to others without them building the application on their machine.)
 
-The latest commit in the `live` branch is deployed to the `main` branch of `amaranth-lang/amaranth-lang.github.io`, which is published at https://amaranth-lang.org/play/. To publish latest changes from the `main` branch, run `git push origin main:live`.
+Only in the `amaranth-lang/playground` repository, the latest commit in the `main` branch is built and the result is published to the `pages` branch, which in turn is published at https://amaranth-lang.org/play/ via a webhook.
 
 ## License
 
