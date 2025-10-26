@@ -274,10 +274,10 @@ function AppContent() {
     setShareURL(url);
   }
 
-  function tabAndPanel({ key, title, titleStyle = {}, content }) {
+  function tabAndPanel({ key, title, titleStyle = {}, content, contentStyle = {} }) {
     return [
       <Tab key={`${key}-tab`} value={key} style={titleStyle}>{title}</Tab>,
-      <TabPanel key={`${key}-tabpanel`} value={key} sx={{ padding: 0 }}>{content}</TabPanel>
+      <TabPanel key={`${key}-tabpanel`} value={key} sx={{ padding: 0, ...contentStyle }}>{content}</TabPanel>
     ];
   }
 
@@ -427,7 +427,8 @@ function AppContent() {
         actions={amaranthSourceEditorActions}
         padding={{ top: 10, bottom: 10 }}
         focus
-      />
+      />,
+      contentStyle: { overflow: 'hidden' },
     })
   ];
 
