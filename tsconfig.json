@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+    "module": "ES2022",
+    "moduleResolution": "node",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "useDefineForClassFields": true,
+    "jsx": "react-jsx",
+    "lib": [
+      "ES2024",
+      "dom"
+    ],
+    "types": [
+      "jest",
+      "node"
+    ]
+  },
+  "ts-node": {
+    "esm": true
+  }
+}
